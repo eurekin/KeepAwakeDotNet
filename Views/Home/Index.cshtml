@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Keep Awake</title>
+    <script>
+        function extendKeepAwake(duration) {
+            fetch('/extend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ duration: duration })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('timeLeft').innerText = data.timeLeft;
+                })
+                .catch(error => console.error(error));
+        }
+
+        function resetKeepAwake() {
+            fetch('/reset', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('timeLeft').innerText = '';
+                })
+                .catch(error => console.error(error));
+        }
+
+        function timeleft() {
+            fetch('/timeleft', { method: 'GET' })
+                .then(response => response.text())
+                .then(data => {
+                    document.getElementById('timeLeft').innerText  = data;
+                })
+                .catch(error => console.error(error));
+        }
+    </script>
+</head>
+<body>
+    <h1>Keep Awake</h1>
+    <p>Current time: <span id="currentTime"></span></p>
+    <p>Time left: <span id="timeLeft"></span></p>
+    <button onclick="extendKeepAwake('00:05:00')">5 minutes</button>
+    <button onclick="extendKeepAwake('01:00:00')">1 hour</button>
+    <button onclick="extendKeepAwake('02:00:00')">2 hours</button>
+    <button onclick="resetKeepAwake()">Reset</button>
+    <script>
+        setInterval(() => {
+            const currentTime = new Date().toLocaleTimeString();
+            document.getElementById('currentTime').innerText = currentTime;
+            timeleft();
+        }, 5000);
+    </script>
+</body>
+</html>
